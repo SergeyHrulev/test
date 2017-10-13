@@ -4,9 +4,17 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\User;
+use App\Group;
 
 class UserController extends Controller
 {
+    protected $user;
+
+    public function __construct(User $user)
+    {
+        return $user = $this->user;
+    }
+
     /**
      * Display a listing of the resource.
      *
@@ -14,7 +22,8 @@ class UserController extends Controller
      */
     public function index()
     {
-        //
+        $data = $this->user->getAll();
+        return $data->toJson();
     }
 
     /**
@@ -22,21 +31,21 @@ class UserController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function create()
+    public function create(Request $request)
     {
-        //
+        $request->validate([
+            'first_name' => 'required|between:3,255',
+            'last_name' => 'required|between:3,255',
+            'email' => 'email',
+            'state' => 'required|integer',
+            'group' => 'reqired|between:3,255',
+        ]);
+
+        $user = new User($request->all());
+        $group = new Group($request->all());
+        $user->creation_date = \Carbon\Carbon::now();
     }
 
-    /**
-     * Store a newly created resource in storage.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @return \Illuminate\Http\Response
-     */
-    public function store(Request $request)
-    {
-        //
-    }
 
     /**
      * Display the specified resource.
@@ -46,18 +55,9 @@ class UserController extends Controller
      */
     public function show($id)
     {
-        //
-    }
+        $data = $this->user->getById($id);
 
-    /**
-     * Show the form for editing the specified resource.
-     *
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
-    public function edit($id)
-    {
-        //
+        return $data;
     }
 
     /**
@@ -69,17 +69,7 @@ class UserController extends Controller
      */
     public function update(Request $request, $id)
     {
-        //
+        $user = User::findOrFail($id);
     }
 
-    /**
-     * Remove the specified resource from storage.
-     *
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
-    public function destroy($id)
-    {
-        //
-    }
 }

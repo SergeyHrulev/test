@@ -16,7 +16,7 @@ class User extends Authenticatable
      * @var array
      */
     protected $fillable = [
-        'name', 'email', 'password',
+        'first_name', 'last_name', 'email', 'state', 'creation_date', 'password'
     ];
 
     /**
@@ -40,5 +40,10 @@ class User extends Authenticatable
     public function getAll()
     {
         return $this->all();
+    }
+
+    public function getById($id)
+    {
+        return $this->where('id', $id)->get();
     }
 }
